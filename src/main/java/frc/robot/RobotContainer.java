@@ -5,6 +5,8 @@
 package frc.robot;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 
@@ -14,8 +16,12 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.IOs.implementations.RollerMotorIORobot;
+import frc.robot.IOs.implementations.TalonVelocityIORobot;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 public class RobotContainer {
   private double MaxSpeed = TunerConstants.kSpeedAt12VoltsMps; // kSpeedAt12VoltsMps desired top speed
@@ -33,6 +39,37 @@ public class RobotContainer {
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
   private final Telemetry logger = new Telemetry(MaxSpeed);
+
+  private final Slot0Configs m_shooterTopS0C = new Slot0Configs()
+  .withKP(0.0)
+  .withKI(0.0)
+  .withKD(0.0)
+  .withKS(0.0)
+  .withKA(0.0)
+  .withKG(0.0)
+  .withKV(0.0);
+  private final Slot0Configs m_shooterBottomS0C = new Slot0Configs()
+  .withKP(0.0)
+  .withKI(0.0)
+  .withKD(0.0)
+  .withKS(0.0)
+  .withKA(0.0)
+  .withKG(0.0)
+  .withKV(0.0);
+
+  private final MotionMagicConfigs m_shooterTopMMC = new MotionMagicConfigs()
+    .withMotionMagicAcceleration(0.0)
+    .withMotionMagicCruiseVelocity(0.0);
+
+  private final MotionMagicConfigs m_shooterBottomMMC = new MotionMagicConfigs()
+    .withMotionMagicAcceleration(0.0)
+    .withMotionMagicCruiseVelocity(0.0);
+
+  private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
+    new TalonVelocityIORobot(0, 1.0, m_shooterTopS0C, null, m_shooterTopMMC),
+    new TalonVelocityIORobot(1, 1.0, m_shooterBottomS0C, null, m_shooterBottomMMC));
+
+  private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem(new RollerMotorIORobot(2, "canbus"));
 
   private void configureBindings() {
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically

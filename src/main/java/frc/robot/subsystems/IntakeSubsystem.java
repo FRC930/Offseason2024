@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.IOs.TalonRollerIO;
@@ -8,6 +11,16 @@ import frc.robot.IOs.TalonRollerIO;
 public class IntakeSubsystem extends SubsystemBase {
 
     private TalonRollerIO m_intakeMotor;
+
+    public IntakeSubsystem(TalonRollerIO intake)  {
+        m_intakeMotor = intake;
+
+        
+
+        m_intakeMotor.getTalon().setNeutralMode(NeutralModeValue.Coast);
+
+        // m_intakeMotor.getTalon().setInverted(true);
+    }
 
      /**
     * <h3>setIntakeSpeed</h3>
