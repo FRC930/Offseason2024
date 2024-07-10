@@ -22,6 +22,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.utilities.CommandFactoryUtility;
 
 public class RobotContainer {
   private double MaxSpeed = TunerConstants.kSpeedAt12VoltsMps; // kSpeedAt12VoltsMps desired top speed
@@ -95,6 +96,9 @@ public class RobotContainer {
 
     coDriverController.leftBumper().onTrue(m_intakeSubsystem.newSetSpeedCommand(75)).onFalse(m_intakeSubsystem.newSetSpeedCommand(0.0));
     coDriverController.rightBumper().onTrue(m_shooterSubsystem.newSetSpeedsCommand(75, 75)).onFalse(m_shooterSubsystem.newSetSpeedsCommand(0.0, 0.0));
+    
+    joystick.leftTrigger().onTrue(CommandFactoryUtility.createStartIntakeCommand(m_intakeSubsystem)).onFalse(CommandFactoryUtility.createStopIntakeCommand(m_intakeSubsystem));
+    joystick.rightTrigger().onTrue(CommandFactoryUtility.createShootCommand(m_shooterSubsystem));
   }
 
   public RobotContainer() {
