@@ -36,7 +36,11 @@ public class TalonVelocityIORobot implements TalonVelocityIO{
 
         TalonFXConfiguration cfg = new TalonFXConfiguration(); //Creates a new blank TalonFX congfiguration that will be applied to the motors in a bit
         cfg.withSlot0(config); // The PID and FF configs
+
+    if(config1!=null){
         cfg.withSlot1(config1);
+    }
+
         cfg.Feedback.SensorToMechanismRatio = this.gearRatio;
         cfg.withMotionMagic(mmConfigs); // The Motion Magic configs
 

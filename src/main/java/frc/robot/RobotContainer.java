@@ -29,6 +29,7 @@ public class RobotContainer {
 
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final CommandXboxController joystick = new CommandXboxController(0); // My joystick
+  private final CommandXboxController coDriverController = new CommandXboxController(1); // My joystick
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -90,6 +91,10 @@ public class RobotContainer {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
     }
     drivetrain.registerTelemetry(logger::telemeterize);
+
+
+    coDriverController.leftBumper().onTrue(m_intakeSubsystem.newSetSpeedCommand(75)).onFalse(m_intakeSubsystem.newSetSpeedCommand(0.0));
+    coDriverController.rightBumper().onTrue(m_shooterSubsystem.newSetSpeedsCommand(75, 75)).onFalse(m_shooterSubsystem.newSetSpeedsCommand(0.0, 0.0));
   }
 
   public RobotContainer() {
