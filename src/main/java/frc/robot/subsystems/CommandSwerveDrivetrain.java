@@ -5,16 +5,26 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.PathPlannerLogging;
+import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.generated.TunerConstants;
 
 /**
  * Class that extends the Phoenix SwerveDrivetrain class and implements
@@ -29,17 +39,22 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private final Rotation2d BlueAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
     /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
     private final Rotation2d RedAlliancePerspectiveRotation = Rotation2d.fromDegrees(180);
+
+    private final SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds().withDriveRequestType(DriveRequestType.Velocity);
+
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean hasAppliedOperatorPerspective = false;
 
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency, SwerveModuleConstants... modules) {
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
+        configurePathPlanner();
         if (Utils.isSimulation()) {
             startSimThread();
         }
     }
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(driveTrainConstants, modules);
+        configurePathPlanner();
         if (Utils.isSimulation()) {
             startSimThread();
         }
@@ -62,6 +77,41 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             updateSimState(deltaTime, RobotController.getBatteryVoltage());
         });
         m_simNotifier.startPeriodic(kSimLoopPeriod);
+    }
+
+    public void configurePathPlanner() {
+        double driveBaseRadius = 0;
+        for (var moduleLocation : m_moduleLocations) {
+            driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
+        }
+
+        AutoBuilder.configureHolonomic(
+            ()->this.getState().Pose,
+            this::seedFieldRelative,
+            this::getCurrentRobotChassisSpeeds,
+            (speeds)->this.setControl(autoRequest.withSpeeds(speeds)),// Consumer of ChassisSpeeds to drive the robot
+            new HolonomicPathFollowerConfig(
+                new PIDConstants(1.6, 0, 0), 
+                new PIDConstants(7.0, 0, 0), 
+                TunerConstants.kSpeedAt12VoltsMps, // Meters  
+                driveBaseRadius, 
+                new ReplanningConfig()),
+                () -> {
+                    // Boolean supplier that controls when the path will be mirrored for the red alliance
+                    // This will flip the path being followed to the red side of the field.
+                    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+                    var alliance = DriverStation.getAlliance();
+                    if (alliance.isPresent()) {
+                        return alliance.get() == DriverStation.Alliance.Red;
+                    }
+                    return false;
+                },
+                this);
+    }
+
+    public ChassisSpeeds getCurrentRobotChassisSpeeds() {
+        return m_kinematics.toChassisSpeeds(getState().ModuleStates);
     }
 
     @Override

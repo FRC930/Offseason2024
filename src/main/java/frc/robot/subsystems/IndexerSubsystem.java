@@ -22,7 +22,7 @@ public class IndexerSubsystem extends SubsystemBase{
 
         m_indexerMotor.getTalon().setNeutralMode(NeutralModeValue.Coast);
 
-        // m_indexerMotor.getTalon().setInverted(true);
+        m_indexerMotor.getTalon().setInverted(true);
     }
 
      /**
@@ -64,7 +64,10 @@ public class IndexerSubsystem extends SubsystemBase{
 
     public boolean isNote() {
        return m_indexerSensor.get();
-        
+    }
+
+    public double getRange() {
+       return m_indexerSensor.getRange();
     }
 
     public InstantCommand newSetSpeedCommand(double speed) {

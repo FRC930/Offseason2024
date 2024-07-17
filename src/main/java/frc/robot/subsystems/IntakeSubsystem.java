@@ -19,7 +19,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
         m_intakeMotor.getTalon().setNeutralMode(NeutralModeValue.Coast);
 
-        // m_intakeMotor.getTalon().setInverted(true);
+        m_intakeMotor.getTalon().setInverted(true);
     }
 
      /**

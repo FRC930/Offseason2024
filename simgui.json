@@ -30,7 +30,21 @@
       "/SmartDashboard/Module 0": "Mechanism2d",
       "/SmartDashboard/Module 1": "Mechanism2d",
       "/SmartDashboard/Module 2": "Mechanism2d",
-      "/SmartDashboard/Module 3": "Mechanism2d"
+      "/SmartDashboard/Module 3": "Mechanism2d",
+      "/SmartDashboard/SelectAuto": "String Chooser"
+    }
+  },
+  "NetworkTables": {
+    "transitory": {
+      "SmartDashboard": {
+        "SelectAuto": {
+          "open": true,
+          "string[]##v_/SmartDashboard/SelectAuto/options": {
+            "open": true
+          }
+        },
+        "open": true
+      }
     }
   },
   "NetworkTables Info": {
