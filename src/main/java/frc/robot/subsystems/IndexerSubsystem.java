@@ -75,5 +75,10 @@ public class IndexerSubsystem extends SubsystemBase{
     public Command newWaitUntilNoteCommand() {
         return new WaitUntilCommand(() -> isNote());
     }
+    
+
+    public Command newWaitUntilNoNoteCommand() {
+        return new WaitUntilCommand(() -> !isNote());
+    }
 
 }
