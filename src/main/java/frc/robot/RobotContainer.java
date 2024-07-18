@@ -201,9 +201,6 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     Command autoCommand = m_autoManager.getAutoManagerSelected();
-    if (autoCommand != null) {
-        autoCommand = new InstantCommand();
-    }
     return autoCommand;
   }
 
