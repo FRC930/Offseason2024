@@ -121,8 +121,8 @@ public class RobotContainer {
     }
     m_drivetrain.registerTelemetry(logger::telemeterize);
 
-    //m_driverController.start().toggleOnTrue((new OrchestraCommand("Yarhar", "HesAPirate.chrp", m_shooterSubsystem)));
-    m_driverController.start().toggleOnTrue((new OrchestraCommand("Cantina", "Cantina.chrp", m_shooterSubsystem)));
+    m_driverController.start().toggleOnTrue((new OrchestraCommand("Yarhar", "HesAPirate.chrp", m_shooterSubsystem)));
+    // m_driverController.start().toggleOnTrue((new OrchestraCommand("Cantina", "Cantina.chrp", m_shooterSubsystem)));
     //m_driverController.start().toggleOnTrue((new OrchestraCommand("SelfDestruct", "SELF_DESTRUCT.chrp", m_shooterSubsystem)));
 
 
