@@ -18,8 +18,10 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.IOs.implementations.RollerMotorIORobot;
 import frc.robot.IOs.implementations.RollerMotorIOSim;
@@ -45,8 +47,8 @@ public class RobotContainer {
 
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final CommandXboxController m_driverController = new CommandXboxController(0); // My joystick
-  private final CommandXboxController coDriverController = new CommandXboxController(1); // My joystick
-  private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
+  private final CommandXboxController m_coDriverController = new CommandXboxController(1); // My joystick
+  private final CommandSwerveDrivetrain m_drivetrain = TunerConstants.DriveTrain; // My drivetrain
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
       .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
@@ -57,6 +59,96 @@ public class RobotContainer {
 
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
+  private final Slot0Configs m_shooterTopS0C = new Slot0Configs()
+  .withKP(1.0)
+  .withKI(0.0)
+  .withKD(0.0)
+  .withKS(0.0)
+  .withKA(0.0)
+  .withKG(0.0)
+  .withKV(0.0);
+  private final Slot0Configs m_shooterBottomS0C = new Slot0Configs()
+  .withKP(1.0)
+  .withKI(0.0)
+  .withKD(0.0)
+  .withKS(0.0)
+  .withKA(0.0)
+  .withKG(0.0)
+  .withKV(0.0);
+
+  private final MotionMagicConfigs m_shooterTopMMC = new MotionMagicConfigs()
+    .withMotionMagicAcceleration(1.0)
+    .withMotionMagicCruiseVelocity(1.0);
+
+  private final MotionMagicConfigs m_shooterBottomMMC = new MotionMagicConfigs()
+    .withMotionMagicAcceleration(1.0)
+    .withMotionMagicCruiseVelocity(1.0);
+
+  private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
+      // (Robot.isReal() ? new TalonVelocityIORobot(5, 1.0, m_shooterTopS0C, null, m_shooterTopMMC) : new TalonVelocityIOSim(5, 1.0, m_shooterTopS0C, null, m_shooterTopMMC)),
+      // (Robot.isReal() ? new TalonVelocityIORobot(6, 1.0, m_shooterBottomS0C, null, m_shooterBottomMMC) : new TalonVelocityIOSim(6, 1.0, m_shooterBottomS0C, null, m_shooterBottomMMC))
+      (Robot.isReal() ? new RollerMotorIORobot(5, "rio") : new RollerMotorIOSim(5, "rio")),
+      (Robot.isReal() ? new RollerMotorIORobot(6, "rio") : new RollerMotorIOSim(6, "rio"))
+  );
+
+  private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem(
+      (Robot.isReal() ? new RollerMotorIORobot(7, "rio") : new RollerMotorIOSim(7, "rio"))
+  );
+
+  private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem(
+      (Robot.isReal() ? new RollerMotorIORobot(3, "rio") : new RollerMotorIOSim(3, "rio")), 
+      (Robot.isReal() ? new TimeOfFlightIORobot(1, 250.0) : new TimeOfFlightIOSim(1))
+  );
+
+  private AutoCommandManager m_autoManager = new AutoCommandManager(
+      m_drivetrain, 
+      m_shooterSubsystem, 
+      m_indexerSubsystem,
+      m_intakeSubsystem);
+
+  private void configureBindings() {
+    m_drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
+    // Code originally from team number 1091 to help deal with deadband on joystick for swerve drive (ty)
+    m_drivetrain.applyRequest(
+      joystickDriveWithDeadband(
+        m_driverController::getLeftY,
+        m_driverController::getLeftX,
+        m_driverController::getRightX)
+    ));
+
+    if (Utils.isSimulation()) {
+      m_drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90.0)));
+    }
+    m_drivetrain.registerTelemetry(logger::telemeterize);
+
+    //m_driverController.start().toggleOnTrue((new OrchestraCommand("Yarhar", "HesAPirate.chrp", m_shooterSubsystem)));
+    m_driverController.start().toggleOnTrue((new OrchestraCommand("Cantina", "Cantina.chrp", m_shooterSubsystem)));
+    //m_driverController.start().toggleOnTrue((new OrchestraCommand("SelfDestruct", "SELF_DESTRUCT.chrp", m_shooterSubsystem)));
+
+
+    m_coDriverController.leftBumper().onTrue(m_intakeSubsystem.newSetSpeedCommand(75.0)).onFalse(m_intakeSubsystem.newSetSpeedCommand(0.0));
+    m_coDriverController.rightBumper().onTrue(m_shooterSubsystem.newSetSpeedsCommand(75.0, 75.0)).onFalse(m_shooterSubsystem.newSetSpeedsCommand(0.0, 0.0));
+    
+    m_driverController.leftBumper().onTrue(CommandFactoryUtility.createStartIntakeCommand(m_intakeSubsystem, m_indexerSubsystem))
+        .onFalse(CommandFactoryUtility.createStopIntakeCommand(m_intakeSubsystem, m_indexerSubsystem));
+
+    m_driverController.rightBumper().onTrue(CommandFactoryUtility.createShootCommand(m_shooterSubsystem, m_indexerSubsystem))
+        .onFalse(CommandFactoryUtility.createStopShootCommand(m_shooterSubsystem, m_indexerSubsystem));
+
+    m_driverController.leftTrigger().onTrue(CommandFactoryUtility.createEjectCommand(m_shooterSubsystem, m_indexerSubsystem, m_intakeSubsystem))
+        .onFalse(CommandFactoryUtility.createStopEjectCommand(m_shooterSubsystem, m_indexerSubsystem, m_intakeSubsystem));
+
+    m_driverController.rightTrigger().onTrue(CommandFactoryUtility.createFeedCommand(m_shooterSubsystem, m_indexerSubsystem))
+        .onFalse(CommandFactoryUtility.createStopShootCommand(m_shooterSubsystem, m_indexerSubsystem));
+
+    m_driverController.x().whileTrue(m_drivetrain.applyRequest(() -> brake));
+
+    // reset the field-centric heading on left bumper press
+    m_driverController.leftStick().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.seedFieldRelative()));
+
+    m_driverController.a().onTrue(CommandFactoryUtility.createEjectShooterCommand(m_shooterSubsystem, m_indexerSubsystem))
+        .onFalse(CommandFactoryUtility.createStopShootCommand(m_shooterSubsystem, m_indexerSubsystem));
+  }
 
   public static Translation2d getLinearVelocity(double xValue, double yValue) {
     // Apply deadband
@@ -74,80 +166,6 @@ public class RobotContainer {
                     .transformBy(new Transform2d(linearMagnitude, 0.0, new Rotation2d()))
                     .getTranslation();
     return linearVelocity;
-  }
-
-
-
-  private final Slot0Configs m_shooterTopS0C = new Slot0Configs()
-  .withKP(0.0)
-  .withKI(0.0)
-  .withKD(0.0)
-  .withKS(0.0)
-  .withKA(0.0)
-  .withKG(0.0)
-  .withKV(0.0);
-  private final Slot0Configs m_shooterBottomS0C = new Slot0Configs()
-  .withKP(0.0)
-  .withKI(0.0)
-  .withKD(0.0)
-  .withKS(0.0)
-  .withKA(0.0)
-  .withKG(0.0)
-  .withKV(0.0);
-
-  private final MotionMagicConfigs m_shooterTopMMC = new MotionMagicConfigs()
-    .withMotionMagicAcceleration(0.0)
-    .withMotionMagicCruiseVelocity(0.0);
-
-  private final MotionMagicConfigs m_shooterBottomMMC = new MotionMagicConfigs()
-    .withMotionMagicAcceleration(0.0)
-    .withMotionMagicCruiseVelocity(0.0);
-
-  private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
-      (Robot.isReal() ? new TalonVelocityIORobot(5, 1.0, m_shooterTopS0C, null, m_shooterTopMMC) : new TalonVelocityIOSim(5, 1.0, m_shooterTopS0C, null, m_shooterTopMMC)),
-      (Robot.isReal() ? new TalonVelocityIORobot(6, 1.0, m_shooterBottomS0C, null, m_shooterBottomMMC) : new TalonVelocityIOSim(6, 1.0, m_shooterBottomS0C, null, m_shooterBottomMMC))
-  );
-
-  private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem(
-      (Robot.isReal() ? new RollerMotorIORobot(7, "canbus") : new RollerMotorIOSim(7, "canbus"))
-  );
-
-  private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem(
-      (Robot.isReal() ? new RollerMotorIORobot(3, "canbus") : new RollerMotorIOSim(3, "canbus")), 
-      (Robot.isReal() ? new TimeOfFlightIORobot(0, 50.0) : new TimeOfFlightIOSim(0))
-  );
-
-  private void configureBindings() {
-    drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-    // Code originally from team number 1091 to help deal with deadband on joystick for swerve drive (ty)
-    drivetrain.applyRequest(
-      joystickDriveWithDeadband(
-        m_driverController::getLeftY,
-        m_driverController::getLeftX,
-        m_driverController::getRightX)
-    ));
-
-    m_driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
-    m_driverController.b().whileTrue(drivetrain
-        .applyRequest(() -> point.withModuleDirection(new Rotation2d(-m_driverController.getLeftY(), -m_driverController.getLeftX()))));
-
-    // reset the field-centric heading on left bumper press
-    m_driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
-
-    if (Utils.isSimulation()) {
-      drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90.0)));
-    }
-    drivetrain.registerTelemetry(logger::telemeterize);
-
-
-    coDriverController.leftBumper().onTrue(m_intakeSubsystem.newSetSpeedCommand(75.0)).onFalse(m_intakeSubsystem.newSetSpeedCommand(0.0));
-    coDriverController.rightBumper().onTrue(m_shooterSubsystem.newSetSpeedsCommand(75.0, 75.0)).onFalse(m_shooterSubsystem.newSetSpeedsCommand(0.0, 0.0));
-    //m_driverController.start().toggleOnTrue((new OrchestraCommand("Yarhar", "HesAPirate.chrp", m_shooterSubsystem)));
-    m_driverController.start().toggleOnTrue((new OrchestraCommand("Cantina", "Cantina.chrp", m_shooterSubsystem)));
-    //m_driverController.start().toggleOnTrue((new OrchestraCommand("SelfDestruct", "SELF_DESTRUCT.chrp", m_shooterSubsystem)));
-    
-    m_driverController.leftTrigger().onTrue(CommandFactoryUtility.createStartIntakeCommand(m_intakeSubsystem, m_indexerSubsystem)).onFalse(CommandFactoryUtility.createStopIntakeCommand(m_intakeSubsystem, m_indexerSubsystem));
-    m_driverController.rightTrigger().onTrue(CommandFactoryUtility.createShootCommand(m_shooterSubsystem, m_indexerSubsystem));
   }
 
   public static double scaleLinearVelocity(double value) {
@@ -173,13 +191,20 @@ public class RobotContainer {
       };
   }
 
-  
-
   public RobotContainer() {
     configureBindings();
   }
 
-  public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+  public void robotPeriodic() {
+    SmartDashboard.putNumber("SensorRange", m_indexerSubsystem.getRange());
   }
+
+  public Command getAutonomousCommand() {
+    Command autoCommand = m_autoManager.getAutoManagerSelected();
+    if (autoCommand != null) {
+        autoCommand = new InstantCommand();
+    }
+    return autoCommand;
+  }
+
 }

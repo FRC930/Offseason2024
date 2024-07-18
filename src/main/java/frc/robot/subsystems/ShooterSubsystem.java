@@ -8,8 +8,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.IOs.TalonVelocityIO;
 import frc.robot.commands.Orchestra.PlaysMusic;
+import frc.robot.IOs.TalonRollerIO;
 
 public class ShooterSubsystem extends SubsystemBase implements PlaysMusic{
    
@@ -18,17 +18,17 @@ public class ShooterSubsystem extends SubsystemBase implements PlaysMusic{
     * This subsystem controls the shooter
     */
    
-    private TalonVelocityIO IO_Top;
-    private TalonVelocityIO IO_Bottom;
+    private TalonRollerIO IO_Top;
+    private TalonRollerIO IO_Bottom;
 
-    private final double VELOCITY_DEADBAND = 5.0;
+    private final double VELOCITY_DEADBAND = 0.1;
     private boolean m_reachedSetPoint = false;
 
-    public ShooterSubsystem(TalonVelocityIO TopIO, TalonVelocityIO BottomIO) { 
+    public ShooterSubsystem(TalonRollerIO TopIO, TalonRollerIO BottomIO) { 
         IO_Top = TopIO;
         IO_Bottom = BottomIO;
 
-        IO_Top.getTalon().setInverted(true);
+        IO_Top.getTalon().setInverted(false);
         IO_Bottom.getTalon().setInverted(false);
     }
 
@@ -86,21 +86,21 @@ public class ShooterSubsystem extends SubsystemBase implements PlaysMusic{
         return IO_Bottom.getVoltage();
     }
 
-    /**
-     * <h3>getTopTargetVelocity</h3>
-     * @return The current voltage of the bottom motor
-     */
-    public double getTopTargetVelocity() {
-        return IO_Top.getTargetVelocity();
-    }
+    // /**
+    //  * <h3>getTopTargetVelocity</h3>
+    //  * @return The current voltage of the bottom motor
+    //  */
+    // public double getTopTargetVelocity() {
+    //     return IO_Top.getTargetVelocity();
+    // }
 
-    /**
-     * <h3>getBottomTargetVelocity</h3>
-     * @return The current voltage of the bottom motor
-     */
-    public double getBottomTargetVelocity() {
-        return IO_Bottom.getTargetVelocity();
-    }
+    // /**
+    //  * <h3>getBottomTargetVelocity</h3>
+    //  * @return The current voltage of the bottom motor
+    //  */
+    // public double getBottomTargetVelocity() {
+    //     return IO_Bottom.getTargetVelocity();
+    // }
 
     /**
      * <h3>stop</h3>
@@ -122,16 +122,16 @@ public class ShooterSubsystem extends SubsystemBase implements PlaysMusic{
         return new InstantCommand(() -> setSpeed(topSpeed, bottomSpeed), this);
     }
 
-    public boolean atSetpoint() {
-        m_reachedSetPoint = MathUtil.applyDeadband(getBottomTargetVelocity() - getBottomMotorSpeed(), VELOCITY_DEADBAND) == 0.0
-            && MathUtil.applyDeadband(getTopTargetVelocity() - getTopMotorSpeed(),VELOCITY_DEADBAND) == 0.0; 
+    // public boolean atSetpoint() {
+    //     m_reachedSetPoint = MathUtil.applyDeadband(getBottomTargetVelocity() - getBottomMotorSpeed(), VELOCITY_DEADBAND) == 0.0
+    //         && MathUtil.applyDeadband(getTopTargetVelocity() - getTopMotorSpeed(),VELOCITY_DEADBAND) == 0.0; 
         
-        return m_reachedSetPoint;
-    }
+    //     return m_reachedSetPoint;
+    // }
 
-    public Command newWaitUntilSetpointCommand(double timeout) {
-        return new WaitCommand(timeout).until(() -> atSetpoint());
-    }
+    // public Command newWaitUntilSetpointCommand(double timeout) {
+    //     return new WaitCommand(timeout).until(() -> atSetpoint());
+    // }
 
     //Orchestra
     @Override
