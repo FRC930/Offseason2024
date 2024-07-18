@@ -1,14 +1,17 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.IOs.TalonVelocityIO;
+import frc.robot.commands.Orchestra.PlaysMusic;
 
-public class ShooterSubsystem extends SubsystemBase{
-   
+public class ShooterSubsystem extends SubsystemBase implements PlaysMusic{
    
    /**
     * <h3>ShooterSubsystem</h3>
@@ -129,5 +132,14 @@ public class ShooterSubsystem extends SubsystemBase{
     public Command newWaitUntilSetpointCommand(double timeout) {
         return new WaitCommand(timeout).until(() -> atSetpoint());
     }
-}
 
+    //Orchestra
+    @Override
+    public TalonFX[] getInstruments() {
+        return new TalonFX[] {IO_Top.getTalon(),IO_Bottom.getTalon()};
+    }
+    @Override
+    public Subsystem[] getSubsystems() {
+        return new Subsystem[] {this};
+    }
+}

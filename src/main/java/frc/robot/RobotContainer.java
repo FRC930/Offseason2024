@@ -27,6 +27,7 @@ import frc.robot.IOs.implementations.TalonVelocityIORobot;
 import frc.robot.IOs.implementations.TalonVelocityIOSim;
 import frc.robot.IOs.implementations.TimeOfFlightIORobot;
 import frc.robot.IOs.implementations.TimeOfFlightIOSim;
+import frc.robot.commands.Orchestra.OrchestraCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IndexerSubsystem;
@@ -141,6 +142,9 @@ public class RobotContainer {
 
     coDriverController.leftBumper().onTrue(m_intakeSubsystem.newSetSpeedCommand(75.0)).onFalse(m_intakeSubsystem.newSetSpeedCommand(0.0));
     coDriverController.rightBumper().onTrue(m_shooterSubsystem.newSetSpeedsCommand(75.0, 75.0)).onFalse(m_shooterSubsystem.newSetSpeedsCommand(0.0, 0.0));
+    //m_driverController.start().toggleOnTrue((new OrchestraCommand("Yarhar", "HesAPirate.chrp", m_shooterSubsystem)));
+    m_driverController.start().toggleOnTrue((new OrchestraCommand("Cantina", "Cantina.chrp", m_shooterSubsystem)));
+    //m_driverController.start().toggleOnTrue((new OrchestraCommand("SelfDestruct", "SELF_DESTRUCT.chrp", m_shooterSubsystem)));
     
     m_driverController.leftTrigger().onTrue(CommandFactoryUtility.createStartIntakeCommand(m_intakeSubsystem, m_indexerSubsystem)).onFalse(CommandFactoryUtility.createStopIntakeCommand(m_intakeSubsystem, m_indexerSubsystem));
     m_driverController.rightTrigger().onTrue(CommandFactoryUtility.createShootCommand(m_shooterSubsystem, m_indexerSubsystem));
