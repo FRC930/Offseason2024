@@ -115,13 +115,6 @@ public class RobotContainer {
         m_driverController::getRightX)
     ));
 
-    m_driverController.x().whileTrue(m_drivetrain.applyRequest(() -> brake));
-    m_driverController.b().whileTrue(m_drivetrain
-        .applyRequest(() -> point.withModuleDirection(new Rotation2d(-m_driverController.getLeftY(), -m_driverController.getLeftX()))));
-
-    // reset the field-centric heading on left bumper press
-    m_driverController.leftStick().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.seedFieldRelative()));
-
     if (Utils.isSimulation()) {
       m_drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90.0)));
     }
@@ -141,6 +134,14 @@ public class RobotContainer {
         .onFalse(CommandFactoryUtility.createStopEjectCommand(m_shooterSubsystem, m_indexerSubsystem, m_intakeSubsystem));
 
     m_driverController.rightTrigger().onTrue(CommandFactoryUtility.createFeedCommand(m_shooterSubsystem, m_indexerSubsystem))
+        .onFalse(CommandFactoryUtility.createStopShootCommand(m_shooterSubsystem, m_indexerSubsystem));
+
+    m_driverController.x().whileTrue(m_drivetrain.applyRequest(() -> brake));
+
+    // reset the field-centric heading on left bumper press
+    m_driverController.leftStick().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.seedFieldRelative()));
+
+    m_driverController.a().onTrue(CommandFactoryUtility.createEjectShooterCommand(m_shooterSubsystem, m_indexerSubsystem))
         .onFalse(CommandFactoryUtility.createStopShootCommand(m_shooterSubsystem, m_indexerSubsystem));
   }
 
