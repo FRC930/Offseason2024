@@ -106,7 +106,8 @@ public class RobotContainer {
       m_indexerSubsystem,
       m_intakeSubsystem);
 
-  private void configureBindings() {
+  private void 
+  configureBindings() {
     m_drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
     // Code originally from team number 1091 to help deal with deadband on joystick for swerve drive (ty)
     m_drivetrain.applyRequest(
@@ -138,7 +139,10 @@ public class RobotContainer {
     m_driverController.leftTrigger().onTrue(CommandFactoryUtility.createEjectCommand(m_shooterSubsystem, m_indexerSubsystem, m_intakeSubsystem))
         .onFalse(CommandFactoryUtility.createStopEjectCommand(m_shooterSubsystem, m_indexerSubsystem, m_intakeSubsystem));
 
-    m_driverController.rightTrigger().onTrue(CommandFactoryUtility.createFeedCommand(m_shooterSubsystem, m_indexerSubsystem))
+    m_driverController.rightTrigger().onTrue(CommandFactoryUtility.createWoofShootCommand(m_shooterSubsystem, m_indexerSubsystem))
+        .onFalse(CommandFactoryUtility.createStopShootCommand(m_shooterSubsystem, m_indexerSubsystem));
+
+    m_driverController.y().onTrue(CommandFactoryUtility.createFeedCommand(m_shooterSubsystem, m_indexerSubsystem))
         .onFalse(CommandFactoryUtility.createStopShootCommand(m_shooterSubsystem, m_indexerSubsystem));
 
     m_driverController.x().whileTrue(m_drivetrain.applyRequest(() -> brake));

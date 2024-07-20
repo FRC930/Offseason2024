@@ -12,8 +12,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class CommandFactoryUtility {
 
     public static Command createShootCommand(ShooterSubsystem shooter, IndexerSubsystem indexer) {
-        return shooter.newSetSpeedsCommand(0.5, 0.5) //50.0, 50.0
-        // .andThen(shooter.newWaitUntilSetpointCommand(2.5))
+        return shooter.newSetSpeedsCommand(0.5, 0.5)
         .andThen(new WaitCommand(0.5))
         .andThen(indexer.newSetSpeedCommand(1.0))
         .andThen(indexer.newWaitUntilNoNoteCommand())
@@ -22,8 +21,17 @@ public class CommandFactoryUtility {
     }
 
     public static Command createFeedCommand(ShooterSubsystem shooter, IndexerSubsystem indexer) {
-        return shooter.newSetSpeedsCommand(0.7, 0.7) //50.0, 50.0
-        // .andThen(shooter.newWaitUntilSetpointCommand(2.5))
+        return shooter.newSetSpeedsCommand(0.7, 0.7)
+        .andThen(new WaitCommand(0.5))
+        .andThen(indexer.newSetSpeedCommand(1.0))
+        .andThen(indexer.newWaitUntilNoNoteCommand())
+        .andThen(new WaitCommand(0.25))
+        .andThen(shooter.newSetSpeedsCommand(0.0, 0.0))
+        .andThen(indexer.newSetSpeedCommand(0.0));
+    }
+
+    public static Command createWoofShootCommand(ShooterSubsystem shooter, IndexerSubsystem indexer) {
+        return shooter.newSetSpeedsCommand(0.3, 1.0)
         .andThen(new WaitCommand(0.5))
         .andThen(indexer.newSetSpeedCommand(1.0))
         .andThen(indexer.newWaitUntilNoNoteCommand())
