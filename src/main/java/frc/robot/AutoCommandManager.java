@@ -36,11 +36,18 @@ public class AutoCommandManager {
             
         PathPlannerAuto midTwo = new PathPlannerAuto("MidTwo");
         PathPlannerAuto sourceTwo = new PathPlannerAuto("SourceTwo");
+        PathPlannerAuto ampTwo = new PathPlannerAuto("AmpTwo");
+        PathPlannerAuto backupTypeBeat = new PathPlannerAuto("BackupTypeBeat");
 
         m_chooser.setDefaultOption("None", new InstantCommand());
 
         m_chooser.addOption("MidTwo", midTwo);
         m_chooser.addOption("SourceTwo", sourceTwo);
+        m_chooser.addOption("AmpTwo", ampTwo);
+        m_chooser.addOption("Backup", backupTypeBeat);
+        m_chooser.addOption("DelayMidTwo", new WaitCommand(5.0).andThen(midTwo));
+        m_chooser.addOption("DelaySourceTwo", new WaitCommand(5.0).andThen(sourceTwo));
+        m_chooser.addOption("DelayAmpTwo", new WaitCommand(5.0).andThen(ampTwo));
 
         SmartDashboard.putData("SelectAuto", m_chooser);
     }

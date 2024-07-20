@@ -3,7 +3,9 @@
   "robotLength": 0.81,
   "holonomicMode": true,
   "pathFolders": [
+    "AmpTwo",
     "MidTwo",
+    "Backup",
     "SourceTwo"
   ],
   "autoFolders": [],

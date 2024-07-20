@@ -137,7 +137,7 @@ public class RobotContainer {
         .onFalse(CommandFactoryUtility.createStopShootCommand(m_shooterSubsystem, m_indexerSubsystem));
 
     m_driverController.leftTrigger().onTrue(CommandFactoryUtility.createEjectCommand(m_shooterSubsystem, m_indexerSubsystem, m_intakeSubsystem))
-        .onFalse(CommandFactoryUtility.createStopEjectCommand(m_shooterSubsystem, m_indexerSubsystem, m_intakeSubsystem));
+        .onFalse(CommandFactoryUtility.createStopAllCommand(m_shooterSubsystem, m_indexerSubsystem, m_intakeSubsystem));
 
     m_driverController.rightTrigger().onTrue(CommandFactoryUtility.createWoofShootCommand(m_shooterSubsystem, m_indexerSubsystem))
         .onFalse(CommandFactoryUtility.createStopShootCommand(m_shooterSubsystem, m_indexerSubsystem));
@@ -150,8 +150,8 @@ public class RobotContainer {
     // reset the field-centric heading on left bumper press
     m_driverController.leftStick().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.seedFieldRelative()));
 
-    m_driverController.a().onTrue(CommandFactoryUtility.createEjectShooterCommand(m_shooterSubsystem, m_indexerSubsystem))
-        .onFalse(CommandFactoryUtility.createStopShootCommand(m_shooterSubsystem, m_indexerSubsystem));
+    m_driverController.a().onTrue(CommandFactoryUtility.createEjectShooterCommand(m_shooterSubsystem, m_indexerSubsystem, m_intakeSubsystem))
+        .onFalse(CommandFactoryUtility.createStopAllCommand(m_shooterSubsystem, m_indexerSubsystem, m_intakeSubsystem));
   }
 
   public static Translation2d getLinearVelocity(double xValue, double yValue) {

@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SourceTwo0"
+            "pathName": "AmpTwo0"
           }
         },
         {
@@ -32,7 +32,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SourceTwo1"
+            "pathName": "AmpTwo1"
           }
         },
         {
@@ -44,7 +44,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SourceTwo2"
+            "pathName": "AmpTwo2"
           }
         },
         {
