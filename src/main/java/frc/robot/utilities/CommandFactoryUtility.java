@@ -21,7 +21,7 @@ public class CommandFactoryUtility {
     }
 
     public static Command createFeedCommand(ShooterSubsystem shooter, IndexerSubsystem indexer) {
-        return shooter.newSetSpeedsCommand(0.7, 0.7)
+        return shooter.newSetSpeedsCommand(0.6, 0.6)
         .andThen(new WaitCommand(0.5))
         .andThen(indexer.newSetSpeedCommand(1.0))
         .andThen(indexer.newWaitUntilNoNoteCommand())
