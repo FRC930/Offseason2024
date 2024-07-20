@@ -35,10 +35,12 @@ public class AutoCommandManager {
             intake);
             
         PathPlannerAuto midTwo = new PathPlannerAuto("MidTwo");
+        PathPlannerAuto sourceTwo = new PathPlannerAuto("SourceTwo");
 
         m_chooser.setDefaultOption("None", new InstantCommand());
 
         m_chooser.addOption("MidTwo", midTwo);
+        m_chooser.addOption("SourceTwo", sourceTwo);
 
         SmartDashboard.putData("SelectAuto", m_chooser);
     }
@@ -59,7 +61,7 @@ public class AutoCommandManager {
 
         NamedCommands.registerCommand("shoot", CommandFactoryUtility.createShootCommand(shooter, indexer));
         NamedCommands.registerCommand("stopShoot", CommandFactoryUtility.createStopShootCommand(shooter, indexer));
-        NamedCommands.registerCommand("intake", CommandFactoryUtility.createShootCommand(shooter, indexer));
+        NamedCommands.registerCommand("intake", CommandFactoryUtility.createStartIntakeCommand(intake, indexer));
         NamedCommands.registerCommand("stopIntake", CommandFactoryUtility.createStopIntakeCommand(intake, indexer));
 
     }

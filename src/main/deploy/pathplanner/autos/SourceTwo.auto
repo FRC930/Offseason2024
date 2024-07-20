@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.454549670868242,
-      "y": 5.574358195791997
+      "x": 0.4708394010225951,
+      "y": 4.1
     },
-    "rotation": 0.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "MidTwo0"
+            "pathName": "SourceTwo0"
           }
         },
         {
@@ -32,7 +32,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "MidTwo1"
+            "pathName": "SourceTwo1"
           }
         },
         {
@@ -44,7 +44,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "MidTwo2"
+            "pathName": "SourceTwo2"
           }
         },
         {

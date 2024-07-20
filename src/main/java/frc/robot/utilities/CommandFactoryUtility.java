@@ -33,8 +33,8 @@ public class CommandFactoryUtility {
     }
 
     public static Command createStartIntakeCommand(IntakeSubsystem intake, IndexerSubsystem indexer) {
-        return intake.newSetSpeedCommand(1.0)
-            .andThen(indexer.newSetSpeedCommand(0.5))
+        return intake.newSetSpeedCommand(0.7)
+            .andThen(indexer.newSetSpeedCommand(0.3))
             .andThen(indexer.newWaitUntilNoteCommand())
             .andThen(new WaitCommand(0.00))
             .andThen(createStopIntakeCommand(intake, indexer));
@@ -48,7 +48,7 @@ public class CommandFactoryUtility {
 
     public static Command createEjectShooterCommand(ShooterSubsystem shooter, IndexerSubsystem indexer) {
         return shooter.newSetSpeedsCommand(-0.15, -0.15)
-                .andThen(indexer.newSetSpeedCommand(-0.5));
+                .andThen(indexer.newSetSpeedCommand(-0.3));
     }
 
     public static Command createStopIntakeCommand(IntakeSubsystem intake, IndexerSubsystem indexer) {
