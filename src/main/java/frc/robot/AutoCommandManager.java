@@ -37,6 +37,7 @@ public class AutoCommandManager {
         PathPlannerAuto midTwo = new PathPlannerAuto("MidTwo");
         PathPlannerAuto sourceTwo1 = new PathPlannerAuto("SourceTwoInner");
         PathPlannerAuto sourceTwo2 = new PathPlannerAuto("SourceTwoOuter");
+        PathPlannerAuto sourceTwoOuterSkip = new PathPlannerAuto("SourceTwoOuterSkip");
         PathPlannerAuto ampTwo = new PathPlannerAuto("AmpTwo");
         PathPlannerAuto backupTypeBeat = new PathPlannerAuto("BackupTypeBeat");
 
@@ -45,6 +46,7 @@ public class AutoCommandManager {
         m_chooser.addOption("MidTwo", midTwo);
         m_chooser.addOption("SourceTwoInner", sourceTwo1);
         m_chooser.addOption("SourceTwoOuter", sourceTwo2);
+        m_chooser.addOption("SourceTwoOuterSkip", sourceTwoOuterSkip);
         m_chooser.addOption("AmpTwo", ampTwo);
         m_chooser.addOption("Backup", backupTypeBeat);
         // m_chooser.addOption("DelayMidTwo", new WaitCommand(5.0).andThen(midTwo));
