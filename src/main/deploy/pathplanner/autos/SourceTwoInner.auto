@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.47,
-      "y": 6.897682725465309
+      "x": 0.4708394010225951,
+      "y": 4.1
     },
     "rotation": 0
   },
@@ -45,6 +45,30 @@
           "type": "path",
           "data": {
             "pathName": "SourceTwo2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SourceTwo3Inner"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SourceTwo4Inner"
           }
         },
         {
