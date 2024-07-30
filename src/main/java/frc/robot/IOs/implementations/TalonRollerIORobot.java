@@ -11,11 +11,11 @@ import frc.robot.utilities.Phoenix6Utility;
  * <h3>RollerMotorIORobot</h3>
  * Representation of a roller motor on the robot
  */
-public class RollerMotorIORobot implements TalonRollerIO {
+public class TalonRollerIORobot implements TalonRollerIO {
 
     protected TalonFX m_motor; // Protected because needed by IOSim
 
-    public RollerMotorIORobot(int id, String canbus) {
+    public TalonRollerIORobot(int id, String canbus) {
         m_motor = new TalonFX(id, canbus);
         TalonFXConfiguration cfg = new TalonFXConfiguration();
 
@@ -27,7 +27,7 @@ public class RollerMotorIORobot implements TalonRollerIO {
 
     }
 
-    public RollerMotorIORobot(int id, String canbus, double statorCurrentLimit, double supplyCurrentLimit) {
+    public TalonRollerIORobot(int id, String canbus, double statorCurrentLimit, double supplyCurrentLimit) {
         this(id, canbus);
         //Setting current limits
         m_motor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimit(statorCurrentLimit).withSupplyCurrentLimit(supplyCurrentLimit));

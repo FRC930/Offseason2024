@@ -9,12 +9,12 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
  * <h3>RollerMotorIOSim</h3>
  * Simulated representation of a roller motor
  */
-public class RollerMotorIOSim extends RollerMotorIORobot {
+public class TalonRollerIOSim extends TalonRollerIORobot {
 
     private DCMotorSim m_sim;
     private final double kMotorResistance = 0.002;
 
-    public RollerMotorIOSim(int id, String canbus) {
+    public TalonRollerIOSim(int id, String canbus) {
         super(id, canbus);
         m_sim = new DCMotorSim(DCMotor.getKrakenX60Foc(1), 1.0,0.001);
     }

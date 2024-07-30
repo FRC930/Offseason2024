@@ -23,8 +23,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.IOs.implementations.RollerMotorIORobot;
-import frc.robot.IOs.implementations.RollerMotorIOSim;
+import frc.robot.IOs.implementations.TalonRollerIORobot;
+import frc.robot.IOs.implementations.TalonRollerIOSim;
 import frc.robot.IOs.implementations.TalonVelocityIORobot;
 import frc.robot.IOs.implementations.TalonVelocityIOSim;
 import frc.robot.IOs.implementations.TimeOfFlightIORobot;
@@ -87,16 +87,16 @@ public class RobotContainer {
   private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
       // (Robot.isReal() ? new TalonVelocityIORobot(5, 1.0, m_shooterTopS0C, null, m_shooterTopMMC) : new TalonVelocityIOSim(5, 1.0, m_shooterTopS0C, null, m_shooterTopMMC)),
       // (Robot.isReal() ? new TalonVelocityIORobot(6, 1.0, m_shooterBottomS0C, null, m_shooterBottomMMC) : new TalonVelocityIOSim(6, 1.0, m_shooterBottomS0C, null, m_shooterBottomMMC))
-      (Robot.isReal() ? new RollerMotorIORobot(5, "rio") : new RollerMotorIOSim(5, "rio")),
-      (Robot.isReal() ? new RollerMotorIORobot(6, "rio") : new RollerMotorIOSim(6, "rio"))
+      (Robot.isReal() ? new TalonRollerIORobot(5, "rio") : new TalonRollerIOSim(5, "rio")),
+      (Robot.isReal() ? new TalonRollerIORobot(6, "rio") : new TalonRollerIOSim(6, "rio"))
   );
 
   private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem(
-      (Robot.isReal() ? new RollerMotorIORobot(7, "rio") : new RollerMotorIOSim(7, "rio"))
+      (Robot.isReal() ? new TalonRollerIORobot(7, "rio") : new TalonRollerIOSim(7, "rio"))
   );
 
   private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem(
-      (Robot.isReal() ? new RollerMotorIORobot(3, "rio") : new RollerMotorIOSim(3, "rio")), 
+      (Robot.isReal() ? new TalonRollerIORobot(3, "rio") : new TalonRollerIOSim(3, "rio")), 
       (Robot.isReal() ? new TimeOfFlightIORobot(1, 250.0) : new TimeOfFlightIOSim(1))
   );
 
