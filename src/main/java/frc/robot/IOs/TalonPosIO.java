@@ -41,11 +41,9 @@ public interface TalonPosIO {
      * @param position The target
      */
     public void setTarget(double position);
-    /**
-     * <h3>setPull</h3>
-     * Sets the position that the mechanism is moving towards, uses different PID's
-     * @param position The target
-     */
+
+    public void stopMotor();
+    
     default double getPeriod() {
         return 0.02;
     }

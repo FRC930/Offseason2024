@@ -4,6 +4,7 @@ package frc.robot.IOs.implementations;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.EmptyControl;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
@@ -33,7 +34,7 @@ public class TalonPosIORobot implements TalonPosIO{
         m_request = new MotionMagicVoltage(0);
 
         TalonFXConfiguration cfg = new TalonFXConfiguration();
-        cfg.withSlot0(config.withGravityType(GravityTypeValue.Arm_Cosine)); // PID/FF configs
+        cfg.withSlot0(config.withGravityType(GravityTypeValue.Elevator_Static)); // PID/FF configs
         cfg.withMotionMagic(mmConfigs); // Motion magic configs
 
         cfg.Feedback.SensorToMechanismRatio = gearRatio; // Applies gear ratio
@@ -74,6 +75,12 @@ public class TalonPosIORobot implements TalonPosIO{
     @Override
     public double getVoltage() {
         return m_motor.getMotorVoltage().getValue();
+    }
+
+    @Override
+    public void stopMotor() {
+        Phoenix6Utility.applyConfigAndNoRetry(m_motor,
+            () -> m_motor.setControl(new EmptyControl()));
     }
 
     @Override
