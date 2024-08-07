@@ -1,13 +1,9 @@
-package frc.robot.subsystems.pivot;
+package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.IOs.TalonPosIO;
-import frc.robot.IOs.implementations.TalonPosIORobot;
-import frc.robot.IOs.implementations.TalonPosIOSim;
-import com.ctre.phoenix6.signals.MotionMagicIsRunningValue;
-import com.ctre.phoenix6.controls.MotionMagicExpoDutyCycle;
 
 public class ClimberSubsystem extends SubsystemBase {
     
