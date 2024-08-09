@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.generated.TunerConstants;
+import frc.robot.utilities.RobotOdometryUtility;
 
 /**
  * Class that extends the Phoenix SwerveDrivetrain class and implements
@@ -129,5 +130,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                 hasAppliedOperatorPerspective = true;
             });
         }
+        
+        RobotOdometryUtility.getInstance().setRobotOdometry(getState().Pose);
     }
 }

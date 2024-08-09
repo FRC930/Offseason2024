@@ -11,13 +11,16 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -29,21 +32,28 @@ import frc.robot.IOs.implementations.TalonVelocityIORobot;
 import frc.robot.IOs.implementations.TalonVelocityIOSim;
 import frc.robot.IOs.implementations.TimeOfFlightIORobot;
 import frc.robot.IOs.implementations.TimeOfFlightIOSim;
+import frc.robot.commands.SwerveAutoRotateCommand;
 import frc.robot.commands.Orchestra.OrchestraCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LimeLightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.utilities.CommandFactoryUtility;
+import frc.robot.utilities.StartInTeleopUtility;
 
 
 public class RobotContainer {
-  private static final double MaxSpeed = TunerConstants.kSpeedAt12VoltsMps; // kSpeedAt12VoltsMps desired top speed
-  private double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
+  public static final double MaxSpeed = TunerConstants.kSpeedAt12VoltsMps; // kSpeedAt12VoltsMps desired top speed
+  public static double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
   private static final double JOYSTICK_DEADBAND = 0.1;
   private static final double JOYSTICK_ROTATIONAL_DEADBAND = 0.1; 
-  private static final double PERCENT_SPEED = 1.0;
+  public static final double PERCENT_SPEED = 1.0;
+
+  // private LimeLightSubsystem m_LimeLightSubsystem = new LimeLightSubsystem();
+
+  private boolean m_TeleopInitalized = false; // only want some things to initialze once
 
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final CommandXboxController m_driverController = new CommandXboxController(0); // My joystick
@@ -58,6 +68,8 @@ public class RobotContainer {
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
   private final Telemetry logger = new Telemetry(MaxSpeed);
+
+  private StartInTeleopUtility m_StartInTeleopUtility = new StartInTeleopUtility(m_drivetrain::seedFieldRelative);
 
   private final Slot0Configs m_shooterTopS0C = new Slot0Configs()
   .withKP(1.0)
@@ -126,7 +138,6 @@ public class RobotContainer {
     // m_driverController.start().toggleOnTrue((new OrchestraCommand("Cantina", "Cantina.chrp", m_shooterSubsystem)));
     //m_driverController.start().toggleOnTrue((new OrchestraCommand("SelfDestruct", "SELF_DESTRUCT.chrp", m_shooterSubsystem)));
 
-
     m_coDriverController.leftBumper().onTrue(m_intakeSubsystem.newSetSpeedCommand(75.0)).onFalse(m_intakeSubsystem.newSetSpeedCommand(0.0));
     m_coDriverController.rightBumper().onTrue(m_shooterSubsystem.newSetSpeedsCommand(75.0, 75.0)).onFalse(m_shooterSubsystem.newSetSpeedsCommand(0.0, 0.0));
     
@@ -135,15 +146,17 @@ public class RobotContainer {
 
     m_driverController.rightBumper().onTrue(CommandFactoryUtility.createShootCommand(m_shooterSubsystem, m_indexerSubsystem))
         .onFalse(CommandFactoryUtility.createStopShootCommand(m_shooterSubsystem, m_indexerSubsystem));
+    // m_driverController.rightBumper().whileTrue(new SwerveAutoRotateCommand(drive, m_driverController::getLeftY, m_driverController::getLeftX, true));
 
     m_driverController.leftTrigger().onTrue(CommandFactoryUtility.createEjectCommand(m_shooterSubsystem, m_indexerSubsystem, m_intakeSubsystem))
         .onFalse(CommandFactoryUtility.createStopAllCommand(m_shooterSubsystem, m_indexerSubsystem, m_intakeSubsystem));
 
-    m_driverController.rightTrigger().onTrue(CommandFactoryUtility.createWoofShootCommand(m_shooterSubsystem, m_indexerSubsystem))
-        .onFalse(CommandFactoryUtility.createStopShootCommand(m_shooterSubsystem, m_indexerSubsystem));
+    // m_driverController.rightTrigger().onTrue(CommandFactoryUtility.createWoofShootCommand(m_shooterSubsystem, m_indexerSubsystem))
+    //     .onFalse(CommandFactoryUtility.createStopShootCommand(m_shooterSubsystem, m_indexerSubsystem));
 
-    m_driverController.y().onTrue(CommandFactoryUtility.createFeedCommand(m_shooterSubsystem, m_indexerSubsystem))
+    m_driverController.rightTrigger().onTrue(CommandFactoryUtility.createFeedCommand(m_shooterSubsystem, m_indexerSubsystem))
         .onFalse(CommandFactoryUtility.createStopShootCommand(m_shooterSubsystem, m_indexerSubsystem));
+    // m_driverController.rightTrigger().whileTrue(new SwerveAutoRotateCommand(drive, m_driverController::getLeftY, m_driverController::getLeftX, false));
 
     m_driverController.x().whileTrue(m_drivetrain.applyRequest(() -> brake));
 
@@ -181,7 +194,7 @@ public class RobotContainer {
         double xValue = xSupplier.getAsDouble();   
         double yValue = ySupplier.getAsDouble();
         double omegaValue = omegaSupplier.getAsDouble();       
-           
+
         Translation2d linearVelocity = getLinearVelocity(xValue, yValue);
                         
         // Squaring the omega value and applying a deadband 
@@ -205,7 +218,16 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     Command autoCommand = m_autoManager.getAutoManagerSelected();
+    if (autoCommand != null) {
+      m_StartInTeleopUtility.updateAutonomous();
+    }
     return autoCommand;
   }
 
+  public void teleopInit() {
+    if(!m_TeleopInitalized) {
+      m_StartInTeleopUtility.updateStartingPosition();
+      m_TeleopInitalized = true;
+    }
+  }
 }
