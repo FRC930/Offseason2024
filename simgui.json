@@ -49,6 +49,9 @@
   },
   "NetworkTables": {
     "transitory": {
+      "Shuffleboard": {
+        "open": true
+      },
       "SmartDashboard": {
         "SelectAuto": {
           "open": true,

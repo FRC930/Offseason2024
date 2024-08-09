@@ -2,6 +2,7 @@ package frc.robot.utilities;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -68,10 +69,18 @@ public class CommandFactoryUtility {
             .andThen(indexer.newSetSpeedCommand(0.0));
     }
 
-    public static Command createStopAllCommand(ShooterSubsystem shooter, IndexerSubsystem indexer, IntakeSubsystem intake) {
+    public static Command createStopAllRollersCommand(ShooterSubsystem shooter, IndexerSubsystem indexer, IntakeSubsystem intake) {
         return shooter.newSetSpeedsCommand(0.0, 0.0)
             .andThen(indexer.newSetSpeedCommand(0.0))
             .andThen(intake.newSetSpeedCommand(0.0));
+    }
+
+    public static Command createStopClimberCommand(ClimberSubsystem climber) {
+        return climber.newStopMotorCommand();
+    }
+
+    public static Command createSetClimberPosCommand(ClimberSubsystem climber, double position) {
+        return climber.newSetTargetCommand(position);
     }
     
 }

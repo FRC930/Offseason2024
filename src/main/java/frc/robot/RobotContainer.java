@@ -22,12 +22,15 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.IOs.implementations.RollerMotorIORobot;
-import frc.robot.IOs.implementations.RollerMotorIOSim;
+import frc.robot.IOs.implementations.TalonPosIORobot;
+import frc.robot.IOs.implementations.TalonPosIOSim;
+import frc.robot.IOs.implementations.TalonRollerIORobot;
+import frc.robot.IOs.implementations.TalonRollerIOSim;
 import frc.robot.IOs.implementations.TalonVelocityIORobot;
 import frc.robot.IOs.implementations.TalonVelocityIOSim;
 import frc.robot.IOs.implementations.TimeOfFlightIORobot;
@@ -35,6 +38,7 @@ import frc.robot.IOs.implementations.TimeOfFlightIOSim;
 import frc.robot.commands.SwerveAutoRotateCommand;
 import frc.robot.commands.Orchestra.OrchestraCommand;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -68,6 +72,8 @@ public class RobotContainer {
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
   private final Telemetry logger = new Telemetry(MaxSpeed);
+  
+  private final Slot0Configs m_climberLeftS0C = new Slot0Configs();
 
   private StartInTeleopUtility m_StartInTeleopUtility = new StartInTeleopUtility(m_drivetrain::seedFieldRelative);
 
@@ -79,7 +85,8 @@ public class RobotContainer {
   .withKA(0.0)
   .withKG(0.0)
   .withKV(0.0);
-  private final Slot0Configs m_shooterBottomS0C = new Slot0Configs()
+  
+  private final Slot0Configs m_climberRightS0C = new Slot0Configs()
   .withKP(1.0)
   .withKI(0.0)
   .withKD(0.0)
@@ -88,28 +95,39 @@ public class RobotContainer {
   .withKG(0.0)
   .withKV(0.0);
 
-  private final MotionMagicConfigs m_shooterTopMMC = new MotionMagicConfigs()
+  private final MotionMagicConfigs m_climberLeftMMC = new MotionMagicConfigs()
     .withMotionMagicAcceleration(1.0)
-    .withMotionMagicCruiseVelocity(1.0);
+    .withMotionMagicCruiseVelocity(1.0)
+    .withMotionMagicJerk(1.0)
+    .withMotionMagicExpo_kA(0.0)
+    .withMotionMagicExpo_kV(0.0);
 
-  private final MotionMagicConfigs m_shooterBottomMMC = new MotionMagicConfigs()
+  private final MotionMagicConfigs m_climberRightMMC = new MotionMagicConfigs()
     .withMotionMagicAcceleration(1.0)
-    .withMotionMagicCruiseVelocity(1.0);
+    .withMotionMagicCruiseVelocity(1.0)
+    .withMotionMagicJerk(1.0)
+    .withMotionMagicExpo_kA(0.0)
+    .withMotionMagicExpo_kV(0.0);
 
   private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
       // (Robot.isReal() ? new TalonVelocityIORobot(5, 1.0, m_shooterTopS0C, null, m_shooterTopMMC) : new TalonVelocityIOSim(5, 1.0, m_shooterTopS0C, null, m_shooterTopMMC)),
       // (Robot.isReal() ? new TalonVelocityIORobot(6, 1.0, m_shooterBottomS0C, null, m_shooterBottomMMC) : new TalonVelocityIOSim(6, 1.0, m_shooterBottomS0C, null, m_shooterBottomMMC))
-      (Robot.isReal() ? new RollerMotorIORobot(5, "rio") : new RollerMotorIOSim(5, "rio")),
-      (Robot.isReal() ? new RollerMotorIORobot(6, "rio") : new RollerMotorIOSim(6, "rio"))
+      (Robot.isReal() ? new TalonRollerIORobot(5, "rio") : new TalonRollerIOSim(5, "rio")),
+      (Robot.isReal() ? new TalonRollerIORobot(6, "rio") : new TalonRollerIOSim(6, "rio"))
   );
 
   private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem(
-      (Robot.isReal() ? new RollerMotorIORobot(7, "rio") : new RollerMotorIOSim(7, "rio"))
+      (Robot.isReal() ? new TalonRollerIORobot(7, "rio") : new TalonRollerIOSim(7, "rio"))
   );
 
   private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem(
-      (Robot.isReal() ? new RollerMotorIORobot(3, "rio") : new RollerMotorIOSim(3, "rio")), 
+      (Robot.isReal() ? new TalonRollerIORobot(3, "rio") : new TalonRollerIOSim(3, "rio")), 
       (Robot.isReal() ? new TimeOfFlightIORobot(1, 250.0) : new TimeOfFlightIOSim(1))
+  );
+
+  private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem(
+    (Robot.isReal() ? new TalonPosIORobot(13, "rio", 1.0, m_climberLeftS0C, m_climberLeftMMC, false) : new TalonPosIOSim(13, "rio", 1.0, m_climberLeftS0C, m_climberLeftMMC, false)),
+    (Robot.isReal() ? new TalonPosIORobot(12, "rio", 1.0, m_climberLeftS0C, m_climberLeftMMC, false) : new TalonPosIOSim(12, "rio", 1.0, m_climberLeftS0C, m_climberLeftMMC, false))
   );
 
   private AutoCommandManager m_autoManager = new AutoCommandManager(
@@ -118,8 +136,7 @@ public class RobotContainer {
       m_indexerSubsystem,
       m_intakeSubsystem);
 
-  private void 
-  configureBindings() {
+  private void configureBindings() {
     m_drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
     // Code originally from team number 1091 to help deal with deadband on joystick for swerve drive (ty)
     m_drivetrain.applyRequest(
@@ -149,7 +166,7 @@ public class RobotContainer {
     // m_driverController.rightBumper().whileTrue(new SwerveAutoRotateCommand(drive, m_driverController::getLeftY, m_driverController::getLeftX, true));
 
     m_driverController.leftTrigger().onTrue(CommandFactoryUtility.createEjectCommand(m_shooterSubsystem, m_indexerSubsystem, m_intakeSubsystem))
-        .onFalse(CommandFactoryUtility.createStopAllCommand(m_shooterSubsystem, m_indexerSubsystem, m_intakeSubsystem));
+        .onFalse(CommandFactoryUtility.createStopAllRollersCommand(m_shooterSubsystem, m_indexerSubsystem, m_intakeSubsystem));
 
     // m_driverController.rightTrigger().onTrue(CommandFactoryUtility.createWoofShootCommand(m_shooterSubsystem, m_indexerSubsystem))
     //     .onFalse(CommandFactoryUtility.createStopShootCommand(m_shooterSubsystem, m_indexerSubsystem));
@@ -160,11 +177,17 @@ public class RobotContainer {
 
     m_driverController.x().whileTrue(m_drivetrain.applyRequest(() -> brake));
 
-    // reset the field-centric heading on left bumper press
+    // reset the field-centric heading on left stick press
     m_driverController.leftStick().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.seedFieldRelative()));
 
     m_driverController.a().onTrue(CommandFactoryUtility.createEjectShooterCommand(m_shooterSubsystem, m_indexerSubsystem, m_intakeSubsystem))
-        .onFalse(CommandFactoryUtility.createStopAllCommand(m_shooterSubsystem, m_indexerSubsystem, m_intakeSubsystem));
+        .onFalse(CommandFactoryUtility.createStopAllRollersCommand(m_shooterSubsystem, m_indexerSubsystem, m_intakeSubsystem));
+
+    m_driverController.povUp().onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, 5.0))
+        .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
+        
+    m_driverController.povDown().onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, 0.0))
+        .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
   }
 
   public static Translation2d getLinearVelocity(double xValue, double yValue) {

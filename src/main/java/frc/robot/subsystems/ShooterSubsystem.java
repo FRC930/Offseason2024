@@ -2,12 +2,10 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.Orchestra.PlaysMusic;
 import frc.robot.IOs.TalonRollerIO;
 
@@ -21,8 +19,8 @@ public class ShooterSubsystem extends SubsystemBase implements PlaysMusic{
     private TalonRollerIO IO_Top;
     private TalonRollerIO IO_Bottom;
 
-    private final double VELOCITY_DEADBAND = 0.1;
-    private boolean m_reachedSetPoint = false;
+    // private final double VELOCITY_DEADBAND = 0.1;
+    // private boolean m_reachedSetPoint = false;
 
     public ShooterSubsystem(TalonRollerIO TopIO, TalonRollerIO BottomIO) { 
         IO_Top = TopIO;
