@@ -31,8 +31,8 @@ public class CommandFactoryUtility {
     }
 
     public static Command createWoofShootCommand(ShooterSubsystem shooter, IndexerSubsystem indexer) {
-        return shooter.newSetSpeedsCommand(0.5, 0.5)
-        .andThen(new WaitCommand(2.0))
+        return shooter.newSetSpeedsCommand(0.4, 0.8)
+        .andThen(new WaitCommand(1.0))
         .andThen(indexer.newSetSpeedCommand(1.0))
         .andThen(indexer.newWaitUntilNoNoteCommand())
         .andThen(new WaitCommand(0.25))
@@ -48,7 +48,7 @@ public class CommandFactoryUtility {
     }
 
     public static Command createEjectCommand(ShooterSubsystem shooter, IndexerSubsystem indexer, IntakeSubsystem intake) {
-        return shooter.newSetSpeedsCommand(0.15, 0.23)
+        return shooter.newSetSpeedsCommand(0.45, 0.45)
                 .andThen(indexer.newSetSpeedCommand(1.0))
                 .andThen(intake.newSetSpeedCommand(-0.5));
     }
