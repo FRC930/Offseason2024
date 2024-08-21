@@ -1,0 +1,72 @@
+{
+  "HALProvider": {
+    "DIO": {
+      "window": {
+        "visible": true
+      }
+    },
+    "Other Devices": {
+      "Talon FX (v6)[3]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX (v6)[5]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX (v6)[6]": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/Pose": "Field2d",
+      "/SmartDashboard/Module 0": "Mechanism2d",
+      "/SmartDashboard/Module 1": "Mechanism2d",
+      "/SmartDashboard/Module 2": "Mechanism2d",
+      "/SmartDashboard/Module 3": "Mechanism2d",
+      "/SmartDashboard/SelectAuto": "String Chooser"
+    },
+    "windows": {
+      "/Pose": {
+        "bottom": 1476,
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables": {
+    "transitory": {
+      "Shuffleboard": {
+        "open": true
+      },
+      "SmartDashboard": {
+        "SelectAuto": {
+          "open": true,
+          "string[]##v_/SmartDashboard/SelectAuto/options": {
+            "open": true
+          }
+        },
+        "open": true
+      }
+    }
+  },
+  "NetworkTables Info": {
+    "Connections": {
+      "open": true
+    },
+    "visible": true
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.0,
+        "y": 2.4475648380683346
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.4775912490484036,
+        "y": 0.9134452505709579
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.55,
+        "y": 4.1
+      },
+      "prevControl": {
+        "x": 3.10754126058894,
+        "y": 1.242555882829311
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "StopIntake",
+      "waypointRelativePos": 0.3,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "stopIntake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -50.0,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "SourceTwo",
+  "previewStartingState": {
+    "rotation": 40.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}
