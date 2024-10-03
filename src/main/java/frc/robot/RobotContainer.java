@@ -72,8 +72,6 @@ public class RobotContainer {
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
   private final Telemetry logger = new Telemetry(MaxSpeed);
-  
-  // private final Slot0Configs m_climberLeftS0C = new Slot0Configs();
 
   private StartInTeleopUtility m_StartInTeleopUtility = new StartInTeleopUtility(m_drivetrain::seedFieldRelative);
 
@@ -86,28 +84,37 @@ public class RobotContainer {
   // .withKG(0.0)
   // .withKV(0.0);
   
-  // private final Slot0Configs m_climberRightS0C = new Slot0Configs()
-  // .withKP(1.0)
-  // .withKI(0.0)
-  // .withKD(0.0)
-  // .withKS(0.0)
-  // .withKA(0.0)
-  // .withKG(0.0)
-  // .withKV(0.0);
+  private final Slot0Configs m_climberLeftS0C = new Slot0Configs()
+    .withKP(1.0)
+    .withKI(0.0)
+    .withKD(0.0)
+    .withKS(0.0)
+    .withKA(0.0)
+    .withKG(0.0)
+    .withKV(0.0);  
 
-  // private final MotionMagicConfigs m_climberLeftMMC = new MotionMagicConfigs()
-  //   .withMotionMagicAcceleration(1.0)
-  //   .withMotionMagicCruiseVelocity(1.0)
-  //   .withMotionMagicJerk(1.0)
-  //   .withMotionMagicExpo_kA(0.0)
-  //   .withMotionMagicExpo_kV(0.0);
+  private final Slot0Configs m_climberRightS0C = new Slot0Configs()
+  .withKP(1.0)
+  .withKI(0.0)
+  .withKD(0.0)
+  .withKS(0.0)
+  .withKA(0.0)
+  .withKG(0.0)
+  .withKV(0.0);
 
-  // private final MotionMagicConfigs m_climberRightMMC = new MotionMagicConfigs()
-  //   .withMotionMagicAcceleration(1.0)
-  //   .withMotionMagicCruiseVelocity(1.0)
-  //   .withMotionMagicJerk(1.0)
-  //   .withMotionMagicExpo_kA(0.0)
-  //   .withMotionMagicExpo_kV(0.0);
+  private final MotionMagicConfigs m_climberLeftMMC = new MotionMagicConfigs()
+    .withMotionMagicAcceleration(1.0)
+    .withMotionMagicCruiseVelocity(1.0)
+    .withMotionMagicJerk(1.0)
+    .withMotionMagicExpo_kA(0.0)
+    .withMotionMagicExpo_kV(0.0);
+
+  private final MotionMagicConfigs m_climberRightMMC = new MotionMagicConfigs()
+    .withMotionMagicAcceleration(1.0)
+    .withMotionMagicCruiseVelocity(1.0)
+    .withMotionMagicJerk(1.0)
+    .withMotionMagicExpo_kA(0.0)
+    .withMotionMagicExpo_kV(0.0);
 
   private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(
       // (Robot.isReal() ? new TalonVelocityIORobot(5, 1.0, m_shooterTopS0C, null, m_shooterTopMMC) : new TalonVelocityIOSim(5, 1.0, m_shooterTopS0C, null, m_shooterTopMMC)),
@@ -125,10 +132,10 @@ public class RobotContainer {
       (Robot.isReal() ? new TimeOfFlightIORobot(1, 250.0) : new TimeOfFlightIOSim(1))
   );
 
-  // private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem(
-  //   (Robot.isReal() ? new TalonPosIORobot(13, "rio", 1.0, m_climberLeftS0C, m_climberLeftMMC, false) : new TalonPosIOSim(13, "rio", 1.0, m_climberLeftS0C, m_climberLeftMMC, false)),
-  //   (Robot.isReal() ? new TalonPosIORobot(12, "rio", 1.0, m_climberLeftS0C, m_climberLeftMMC, false) : new TalonPosIOSim(12, "rio", 1.0, m_climberLeftS0C, m_climberLeftMMC, false))
-  // );
+  private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem(
+    (Robot.isReal() ? new TalonPosIORobot(13, "rio", 1.0, m_climberLeftS0C, m_climberLeftMMC, false) : new TalonPosIOSim(13, "rio", 1.0, m_climberLeftS0C, m_climberLeftMMC, false)),
+    (Robot.isReal() ? new TalonPosIORobot(12, "rio", 1.0, m_climberRightS0C, m_climberRightMMC, false) : new TalonPosIOSim(12, "rio", 1.0, m_climberRightS0C, m_climberRightMMC, false))
+  );
 
   private AutoCommandManager m_autoManager = new AutoCommandManager(
       m_drivetrain, 
@@ -183,11 +190,11 @@ public class RobotContainer {
     m_driverController.a().onTrue(CommandFactoryUtility.createEjectShooterCommand(m_shooterSubsystem, m_indexerSubsystem, m_intakeSubsystem))
         .onFalse(CommandFactoryUtility.createStopAllRollersCommand(m_shooterSubsystem, m_indexerSubsystem, m_intakeSubsystem));
 
-    // m_driverController.povUp().onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, 5.0))
-        // .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
+    m_driverController.povUp().onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, 5.0))
+        .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
         
-    // m_driverController.povDown().onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, 0.0))
-        // .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
+    m_driverController.povDown().onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, 0.0))
+        .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
   }
 
   public static Translation2d getLinearVelocity(double xValue, double yValue) {
