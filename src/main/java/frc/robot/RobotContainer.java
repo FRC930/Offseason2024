@@ -237,6 +237,8 @@ public class RobotContainer {
 
   public void robotPeriodic() {
     SmartDashboard.putNumber("SensorRange", m_indexerSubsystem.getRange());
+    SmartDashboard.putNumber("LeftClimberPos", m_climberSubsystem.getLeftPos());
+    SmartDashboard.putNumber("RightClimberPos", m_climberSubsystem.getRightPos());
   }
 
   public Command getAutonomousCommand() {
