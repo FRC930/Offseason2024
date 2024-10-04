@@ -79,8 +79,8 @@ public class CommandFactoryUtility {
         return climber.newStopMotorCommand();
     }
 
-    public static Command createSetClimberPosCommand(ClimberSubsystem climber, double position) {
-        return climber.newSetTargetCommand(position);
+    public static Command createSetClimberPosCommand(ClimberSubsystem climber, double lPos, double rPos) {
+        return climber.newSetTargetCommand(lPos, rPos);
     }
     
 }

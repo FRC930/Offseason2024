@@ -85,7 +85,7 @@ public class RobotContainer {
   // .withKV(0.0);
   
   private final Slot0Configs m_climberLeftS0C = new Slot0Configs()
-    .withKP(1.0)
+    .withKP(0.12)
     .withKI(0.0)
     .withKD(0.0)
     .withKS(0.0)
@@ -94,7 +94,7 @@ public class RobotContainer {
     .withKV(0.0);  
 
   private final Slot0Configs m_climberRightS0C = new Slot0Configs()
-  .withKP(1.0)
+  .withKP(0.12)
   .withKI(0.0)
   .withKD(0.0)
   .withKS(0.0)
@@ -190,10 +190,10 @@ public class RobotContainer {
     m_driverController.a().onTrue(CommandFactoryUtility.createEjectShooterCommand(m_shooterSubsystem, m_indexerSubsystem, m_intakeSubsystem))
         .onFalse(CommandFactoryUtility.createStopAllRollersCommand(m_shooterSubsystem, m_indexerSubsystem, m_intakeSubsystem));
 
-    m_driverController.povUp().onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, 5.0))
+    m_driverController.povUp().onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, -82.0, -88.0))
         .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
         
-    m_driverController.povDown().onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, 0.0))
+    m_driverController.povDown().onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, 258.0, -429.0))
         .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
   }
 

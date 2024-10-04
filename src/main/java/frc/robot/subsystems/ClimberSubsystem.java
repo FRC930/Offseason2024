@@ -17,9 +17,9 @@ public class ClimberSubsystem extends SubsystemBase {
 
     }
    
-    public void setTarget(double pos) {
-        m_climberLeft.setTarget(pos);
-        m_climberRight.setTarget(pos);
+    public void setTarget(double lPos, double rPos) {
+        m_climberLeft.setTarget(lPos);
+        m_climberRight.setTarget(rPos);
     }
 
     public double getTarget() {
@@ -47,8 +47,8 @@ public class ClimberSubsystem extends SubsystemBase {
         m_climberRight.stopMotor();
     }
 
-    public Command newSetTargetCommand(double pos) {
-        return new InstantCommand(() -> setTarget(pos), this);
+    public Command newSetTargetCommand(double lPos, double rPos) {
+        return new InstantCommand(() -> setTarget(lPos, rPos), this);
     }
     
     public Command newStopMotorCommand() {
