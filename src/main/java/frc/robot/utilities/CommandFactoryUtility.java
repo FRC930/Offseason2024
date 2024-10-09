@@ -82,5 +82,13 @@ public class CommandFactoryUtility {
     public static Command createSetClimberPosCommand(ClimberSubsystem climber, double lPos, double rPos) {
         return climber.newSetTargetCommand(lPos, rPos);
     }
+
+    public static Command createSetLeftClimberSpeedCommand(ClimberSubsystem climber, double lPos) {
+        return climber.newSetLeftTargetCommand(lPos);
+    }
+
+    public static Command createSetRightClimberSpeedCommand(ClimberSubsystem climber, double rPos) {
+        return climber.newSetRightTargetCommand(rPos);
+    }
     
 }

@@ -133,8 +133,10 @@ public class RobotContainer {
   );
 
   private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem(
-    (Robot.isReal() ? new TalonPosIORobot(13, "rio", 1.0, m_climberLeftS0C, m_climberLeftMMC, false) : new TalonPosIOSim(13, "rio", 1.0, m_climberLeftS0C, m_climberLeftMMC, false)),
-    (Robot.isReal() ? new TalonPosIORobot(12, "rio", 1.0, m_climberRightS0C, m_climberRightMMC, false) : new TalonPosIOSim(12, "rio", 1.0, m_climberRightS0C, m_climberRightMMC, false))
+    new TalonRollerIORobot(13, "rio"),
+    new TalonRollerIORobot(12, "rio")
+    // (Robot.isReal() ? new TalonPosIORobot(13, "rio", 1.0, m_climberLeftS0C, m_climberLeftMMC, false) : new TalonPosIOSim(13, "rio", 1.0, m_climberLeftS0C, m_climberLeftMMC, false)),
+    // (Robot.isReal() ? new TalonPosIORobot(12, "rio", 1.0, m_climberRightS0C, m_climberRightMMC, false) : new TalonPosIOSim(12, "rio", 1.0, m_climberRightS0C, m_climberRightMMC, false))
   );
 
   private AutoCommandManager m_autoManager = new AutoCommandManager(
@@ -161,9 +163,6 @@ public class RobotContainer {
     m_driverController.start().toggleOnTrue((new OrchestraCommand("Yarhar", "HesAPirate.chrp", m_shooterSubsystem)));
     // m_driverController.start().toggleOnTrue((new OrchestraCommand("Cantina", "Cantina.chrp", m_shooterSubsystem)));
     //m_driverController.start().toggleOnTrue((new OrchestraCommand("SelfDestruct", "SELF_DESTRUCT.chrp", m_shooterSubsystem)));
-
-    m_coDriverController.leftBumper().onTrue(m_intakeSubsystem.newSetSpeedCommand(75.0)).onFalse(m_intakeSubsystem.newSetSpeedCommand(0.0));
-    m_coDriverController.rightBumper().onTrue(m_shooterSubsystem.newSetSpeedsCommand(75.0, 75.0)).onFalse(m_shooterSubsystem.newSetSpeedsCommand(0.0, 0.0));
     
     m_driverController.leftBumper().onTrue(CommandFactoryUtility.createStartIntakeCommand(m_intakeSubsystem, m_indexerSubsystem))
         .onFalse(CommandFactoryUtility.createStopIntakeCommand(m_intakeSubsystem, m_indexerSubsystem));
@@ -190,11 +189,29 @@ public class RobotContainer {
     m_driverController.a().onTrue(CommandFactoryUtility.createEjectShooterCommand(m_shooterSubsystem, m_indexerSubsystem, m_intakeSubsystem))
         .onFalse(CommandFactoryUtility.createStopAllRollersCommand(m_shooterSubsystem, m_indexerSubsystem, m_intakeSubsystem));
 
-    m_driverController.povUp().onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, -82.0, -88.0))
+    m_driverController.povUp().onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, -0.5, 0.5))
         .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
         
-    m_driverController.povDown().onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, 258.0, -429.0))
+    m_driverController.povDown().onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, 0.5, -0.5))
         .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
+
+    m_coDriverController.leftBumper().and(m_coDriverController.rightBumper().negate()).onTrue(CommandFactoryUtility.createSetLeftClimberSpeedCommand(m_climberSubsystem, -0.8))
+    .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
+    m_coDriverController.leftTrigger().and(m_coDriverController.rightTrigger().negate()).onTrue(CommandFactoryUtility.createSetLeftClimberSpeedCommand(m_climberSubsystem, 0.8))
+    .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
+
+    m_coDriverController.rightBumper().and(m_coDriverController.leftBumper().negate()).onTrue(CommandFactoryUtility.createSetRightClimberSpeedCommand(m_climberSubsystem, 0.8))
+    .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
+    m_coDriverController.rightTrigger().and(m_coDriverController.leftTrigger().negate()).onTrue(CommandFactoryUtility.createSetRightClimberSpeedCommand(m_climberSubsystem, -0.8))
+    .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
+
+    m_coDriverController.leftBumper().and(m_coDriverController.rightBumper())
+      .onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, -0.8, 0.8))
+      .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
+
+    m_coDriverController.leftTrigger().and(m_coDriverController.rightTrigger())
+      .onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, 0.8, -0.8))
+      .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
   }
 
   public static Translation2d getLinearVelocity(double xValue, double yValue) {
@@ -244,8 +261,6 @@ public class RobotContainer {
 
   public void robotPeriodic() {
     SmartDashboard.putNumber("SensorRange", m_indexerSubsystem.getRange());
-    SmartDashboard.putNumber("LeftClimberPos", m_climberSubsystem.getLeftPos());
-    SmartDashboard.putNumber("RightClimberPos", m_climberSubsystem.getRightPos());
   }
 
   public Command getAutonomousCommand() {
