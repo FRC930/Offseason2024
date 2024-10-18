@@ -189,10 +189,10 @@ public class RobotContainer {
     m_driverController.a().onTrue(CommandFactoryUtility.createEjectShooterCommand(m_shooterSubsystem, m_indexerSubsystem, m_intakeSubsystem))
         .onFalse(CommandFactoryUtility.createStopAllRollersCommand(m_shooterSubsystem, m_indexerSubsystem, m_intakeSubsystem));
 
-    m_driverController.povUp().onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, -0.5, 0.5))
+    m_driverController.povUp().onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, -0.2, 0.2))
         .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
         
-    m_driverController.povDown().onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, 0.5, -0.5))
+    m_driverController.povDown().onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, 0.2, -0.2))
         .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
 
     m_coDriverController.leftBumper().and(m_coDriverController.rightBumper().negate()).onTrue(CommandFactoryUtility.createSetLeftClimberSpeedCommand(m_climberSubsystem, -0.8))
