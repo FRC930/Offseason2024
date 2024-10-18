@@ -55,6 +55,8 @@ public class RobotContainer {
   private static final double JOYSTICK_ROTATIONAL_DEADBAND = 0.1; 
   public static final double PERCENT_SPEED = 1.0;
 
+  public static final double CLIMBER_SPEED = 0.2;
+
   // private LimeLightSubsystem m_LimeLightSubsystem = new LimeLightSubsystem();
 
   private boolean m_TeleopInitalized = false; // only want some things to initialze once
@@ -189,28 +191,28 @@ public class RobotContainer {
     m_driverController.a().onTrue(CommandFactoryUtility.createEjectShooterCommand(m_shooterSubsystem, m_indexerSubsystem, m_intakeSubsystem))
         .onFalse(CommandFactoryUtility.createStopAllRollersCommand(m_shooterSubsystem, m_indexerSubsystem, m_intakeSubsystem));
 
-    m_driverController.povUp().onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, -0.2, 0.2))
+    m_driverController.povUp().onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, -CLIMBER_SPEED, CLIMBER_SPEED))
         .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
         
-    m_driverController.povDown().onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, 0.2, -0.2))
+    m_driverController.povDown().onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, CLIMBER_SPEED, -CLIMBER_SPEED))
         .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
 
-    m_coDriverController.leftBumper().and(m_coDriverController.rightBumper().negate()).onTrue(CommandFactoryUtility.createSetLeftClimberSpeedCommand(m_climberSubsystem, -0.8))
+    m_coDriverController.leftBumper().and(m_coDriverController.rightBumper().negate()).onTrue(CommandFactoryUtility.createSetLeftClimberSpeedCommand(m_climberSubsystem, -CLIMBER_SPEED))
     .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
-    m_coDriverController.leftTrigger().and(m_coDriverController.rightTrigger().negate()).onTrue(CommandFactoryUtility.createSetLeftClimberSpeedCommand(m_climberSubsystem, 0.8))
+    m_coDriverController.leftTrigger().and(m_coDriverController.rightTrigger().negate()).onTrue(CommandFactoryUtility.createSetLeftClimberSpeedCommand(m_climberSubsystem, CLIMBER_SPEED))
     .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
 
-    m_coDriverController.rightBumper().and(m_coDriverController.leftBumper().negate()).onTrue(CommandFactoryUtility.createSetRightClimberSpeedCommand(m_climberSubsystem, 0.8))
+    m_coDriverController.rightBumper().and(m_coDriverController.leftBumper().negate()).onTrue(CommandFactoryUtility.createSetRightClimberSpeedCommand(m_climberSubsystem, CLIMBER_SPEED))
     .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
-    m_coDriverController.rightTrigger().and(m_coDriverController.leftTrigger().negate()).onTrue(CommandFactoryUtility.createSetRightClimberSpeedCommand(m_climberSubsystem, -0.8))
+    m_coDriverController.rightTrigger().and(m_coDriverController.leftTrigger().negate()).onTrue(CommandFactoryUtility.createSetRightClimberSpeedCommand(m_climberSubsystem, -CLIMBER_SPEED))
     .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
 
     m_coDriverController.leftBumper().and(m_coDriverController.rightBumper())
-      .onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, -0.8, 0.8))
+      .onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, -CLIMBER_SPEED, CLIMBER_SPEED))
       .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
 
     m_coDriverController.leftTrigger().and(m_coDriverController.rightTrigger())
-      .onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, 0.8, -0.8))
+      .onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, CLIMBER_SPEED, -CLIMBER_SPEED))
       .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
   }
 
