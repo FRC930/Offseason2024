@@ -4,6 +4,9 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
+import com.ctre.phoenix6.configs.SlotConfigs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -16,6 +19,30 @@ import edu.wpi.first.wpilibj.DriverStation;
 public final class Phoenix6Utility {
     
     private static final int CONFIG_RETRY_COUNT = 5;
+
+    public static StatusCode configSoftLimits(TalonFX talon, double reverse, double forward) {
+        SoftwareLimitSwitchConfigs configs = new SoftwareLimitSwitchConfigs();
+
+        configs.ForwardSoftLimitEnable = true;
+        configs.ForwardSoftLimitThreshold = forward;
+        configs.ReverseSoftLimitEnable = true;
+        configs.ReverseSoftLimitThreshold = reverse;
+
+        return talon.getConfigurator().apply(configs);
+    }
+
+    public static StatusCode configSlot0(TalonFX talon, double kP, double kI, double kD, double kG, double kS, double kV) {
+        SlotConfigs configs = new SlotConfigs();
+
+        configs.kP = kP;
+        configs.kI = kI;
+        configs.kD = kD;
+        configs.kG = kG;
+        configs.kS = kS;
+        configs.kG = kG;
+
+        return talon.getConfigurator().apply(configs);
+    }
 
     /**
      * Applies a blank Talon Configuration to the given talon, in order to factory reset
