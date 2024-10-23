@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -15,17 +16,29 @@ public class ClimberSubsystem extends SubsystemBase {
     private TalonRollerIO m_climberLeft;
     private TalonRollerIO m_climberRight;
 
+    private static final boolean useSmartDashboard = true;
+
+    private static final double statorCurrentLimit = 80.0;
+    private static final double inputCurrentLimit = 40.0;
 
 
-    public ClimberSubsystem( TalonRollerIO climberLeft, TalonRollerIO climberRight) {
+    public ClimberSubsystem(TalonRollerIO climberLeft, TalonRollerIO climberRight) {
         m_climberLeft = climberLeft;
         m_climberRight = climberRight;
+
+        Phoenix6Utility.applyConfigAndRetry(m_climberLeft.getTalon(), () -> Phoenix6Utility.configCurrentLimits(m_climberLeft.getTalon(), true, statorCurrentLimit, true, inputCurrentLimit));
+        Phoenix6Utility.applyConfigAndRetry(m_climberRight.getTalon(), () -> Phoenix6Utility.configCurrentLimits(m_climberRight.getTalon(), true, statorCurrentLimit, true, inputCurrentLimit));
 
         //Phoenix6Utility.configSoftLimits(climberLeft, 0.0, 0.0);
         //Phoenix6Utility.configSoftLimits(climberLeft, 0.0, 0.0);
 
         //Phoenix6Utility.configSlot0(climberLeft.getTalon(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
         //Phoenix6Utility.configSlot0(climberRight.getTalon(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+
+        SmartDashboard.putBoolean("ClimberSubsystem/UsingSmartDashboardOverrides", useSmartDashboard);
+        if(useSmartDashboard) {
+            SmartDashboard.putNumber("ClimberSubsystem/MotorSpeedOverride", 0.0);
+        }
     }
    
     public void setTarget(double lPos, double rPos) {
