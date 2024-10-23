@@ -18,8 +18,8 @@ public class ClimberSubsystem extends SubsystemBase {
 
     private static final boolean useSmartDashboard = true;
 
-    private static final double statorCurrentLimit = 80.0;
-    private static final double inputCurrentLimit = 40.0;
+    private static final double statorCurrentLimit = 90.0;
+    private static final double inputCurrentLimit = 60.0;
 
 
     public ClimberSubsystem(TalonRollerIO climberLeft, TalonRollerIO climberRight) {
