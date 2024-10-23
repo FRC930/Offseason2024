@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -40,6 +41,17 @@ public final class Phoenix6Utility {
         configs.kG = kG;
         configs.kS = kS;
         configs.kG = kG;
+
+        return talon.getConfigurator().apply(configs);
+    }
+
+    public static StatusCode configCurrentLimits(TalonFX talon, boolean statorLimitEnabled, double statorLimit, boolean supplyLimitEnabled, double supplyLimit) {
+        CurrentLimitsConfigs configs = new CurrentLimitsConfigs();
+
+        configs.StatorCurrentLimitEnable = statorLimitEnabled;
+        configs.StatorCurrentLimit = statorLimit;
+        configs.SupplyCurrentLimitEnable = supplyLimitEnabled;
+        configs.SupplyCurrentLimit = supplyLimit;
 
         return talon.getConfigurator().apply(configs);
     }
