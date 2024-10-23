@@ -55,10 +55,9 @@ public class RobotContainer {
   private static final double JOYSTICK_ROTATIONAL_DEADBAND = 0.1; 
   public static final double PERCENT_SPEED = 1.0;
 
-  public static final double CLIMBER_SPEED = 0.2;
+  public static final double CLIMBER_SPEED = 0.5;
 
   // private LimeLightSubsystem m_LimeLightSubsystem = new LimeLightSubsystem();
-
   private boolean m_TeleopInitalized = false; // only want some things to initialze once
 
   /* Setting up bindings for necessary control of the swerve drive platform */
@@ -263,6 +262,8 @@ public class RobotContainer {
 
   public void robotPeriodic() {
     SmartDashboard.putNumber("SensorRange", m_indexerSubsystem.getRange());
+    SmartDashboard.putNumber("LeftClimberPos", m_climberSubsystem.getLeftPos());
+    SmartDashboard.putNumber("RightClimberPos", m_climberSubsystem.getRightPos());
   }
 
   public Command getAutonomousCommand() {

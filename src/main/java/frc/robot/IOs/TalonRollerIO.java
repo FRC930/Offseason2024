@@ -45,4 +45,5 @@ public interface TalonRollerIO {
     }
     public double getStatorCurrent();
     public double getInputCurrent();
+    public double getPos();
 }

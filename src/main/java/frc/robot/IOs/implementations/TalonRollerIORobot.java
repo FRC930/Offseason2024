@@ -65,4 +65,9 @@ public class TalonRollerIORobot implements TalonRollerIO {
     public double getInputCurrent() {
         return m_motor.getSupplyCurrent().getValue();
     }
+
+    @Override
+    public double getPos() {
+        return m_motor.getPosition().getValue();
+    }
 }

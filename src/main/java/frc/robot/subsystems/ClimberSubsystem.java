@@ -21,7 +21,9 @@ public class ClimberSubsystem extends SubsystemBase {
         m_climberLeft = climberLeft;
         m_climberRight = climberRight;
 
-        //Phoenix6Utility.configSoftLimits(climberLeft, 0.0, 0.0);
+        m_climberRight.getTalon().setInverted(true);
+
+        Phoenix6Utility.configSoftLimits(climberLeft.getTalon(), 20.0, 100.0);
         //Phoenix6Utility.configSoftLimits(climberLeft, 0.0, 0.0);
 
         //Phoenix6Utility.configSlot0(climberLeft.getTalon(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
@@ -45,13 +47,13 @@ public class ClimberSubsystem extends SubsystemBase {
     //     return m_climberLeft.getTarget();
     // }
 
-    // public double getLeftPos() {
-    //     return m_climberLeft.getPos();
-    // }
+    public double getLeftPos() {
+        return m_climberLeft.getPos();
+    }
 
-    // public double getRightPos() {
-    //     return m_climberRight.getPos();
-    // }
+    public double getRightPos() {
+        return m_climberRight.getPos();
+    }
 
     public double getLeftVoltage() {
         return m_climberLeft.getVoltage();
