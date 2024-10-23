@@ -31,7 +31,7 @@ public class CommandFactoryUtility {
     }
 
     public static Command createWoofShootCommand(ShooterSubsystem shooter, IndexerSubsystem indexer) {
-        return shooter.newSetSpeedsCommand(0.4, 0.8)
+        return shooter.newSetSpeedsCommand(0.25, 0.85)
         .andThen(new WaitCommand(1.0))
         .andThen(indexer.newSetSpeedCommand(1.0))
         .andThen(indexer.newWaitUntilNoNoteCommand())
