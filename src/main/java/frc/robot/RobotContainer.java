@@ -63,6 +63,7 @@ public class RobotContainer {
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final CommandXboxController m_driverController = new CommandXboxController(0); // My joystick
   private final CommandXboxController m_coDriverController = new CommandXboxController(1); // My joystick
+  private final CommandXboxController m_resetController = new CommandXboxController(2); // For resetting elevator
   private final CommandSwerveDrivetrain m_drivetrain = TunerConstants.DriveTrain; // My drivetrain
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -182,7 +183,7 @@ public class RobotContainer {
         // .onFalse(CommandFactoryUtility.createStopShootCommand(m_shooterSubsystem, m_indexerSubsystem));
     // m_driverController.rightTrigger().whileTrue(new SwerveAutoRotateCommand(drive, m_driverController::getLeftY, m_driverController::getLeftX, false));
 
-    m_driverController.x().whileTrue(m_drivetrain.applyRequest(() -> brake));
+    // m_driverController.x().whileTrue(m_drivetrain.applyRequest(() -> brake));
 
     // reset the field-centric heading on left stick press
     m_driverController.povLeft().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.seedFieldRelative()));
@@ -190,15 +191,15 @@ public class RobotContainer {
     m_driverController.a().onTrue(CommandFactoryUtility.createEjectShooterCommand(m_shooterSubsystem, m_indexerSubsystem, m_intakeSubsystem))
         .onFalse(CommandFactoryUtility.createStopAllRollersCommand(m_shooterSubsystem, m_indexerSubsystem, m_intakeSubsystem));
 
-    m_driverController.povUp().onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, -CLIMBER_SPEED, CLIMBER_SPEED))
+    m_driverController.y().onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, CLIMBER_SPEED, CLIMBER_SPEED))
         .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
         
-    m_driverController.povDown().onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, CLIMBER_SPEED, -CLIMBER_SPEED))
+    m_driverController.x().onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, -CLIMBER_SPEED, -CLIMBER_SPEED))
         .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
 
-    m_coDriverController.leftBumper().and(m_coDriverController.rightBumper().negate()).onTrue(CommandFactoryUtility.createSetLeftClimberSpeedCommand(m_climberSubsystem, -CLIMBER_SPEED))
+    m_coDriverController.leftBumper().and(m_coDriverController.rightBumper().negate()).onTrue(CommandFactoryUtility.createSetLeftClimberSpeedCommand(m_climberSubsystem, CLIMBER_SPEED))
     .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
-    m_coDriverController.leftTrigger().and(m_coDriverController.rightTrigger().negate()).onTrue(CommandFactoryUtility.createSetLeftClimberSpeedCommand(m_climberSubsystem, CLIMBER_SPEED))
+    m_coDriverController.leftTrigger().and(m_coDriverController.rightTrigger().negate()).onTrue(CommandFactoryUtility.createSetLeftClimberSpeedCommand(m_climberSubsystem, -CLIMBER_SPEED))
     .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
 
     m_coDriverController.rightBumper().and(m_coDriverController.leftBumper().negate()).onTrue(CommandFactoryUtility.createSetRightClimberSpeedCommand(m_climberSubsystem, CLIMBER_SPEED))
@@ -207,12 +208,15 @@ public class RobotContainer {
     .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
 
     m_coDriverController.leftBumper().and(m_coDriverController.rightBumper())
-      .onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, -CLIMBER_SPEED, CLIMBER_SPEED))
+      .onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, CLIMBER_SPEED, CLIMBER_SPEED))
       .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
 
     m_coDriverController.leftTrigger().and(m_coDriverController.rightTrigger())
-      .onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, CLIMBER_SPEED, -CLIMBER_SPEED))
+      .onTrue(CommandFactoryUtility.createSetClimberPosCommand(m_climberSubsystem, -CLIMBER_SPEED, -CLIMBER_SPEED))
       .onFalse(CommandFactoryUtility.createStopClimberCommand(m_climberSubsystem));
+
+    m_resetController.leftTrigger().whileTrue(m_climberSubsystem.newZeroLeftMotorCommand());
+    m_resetController.rightTrigger().whileTrue(m_climberSubsystem.newZeroRightMotorCommand());
   }
 
   public static Translation2d getLinearVelocity(double xValue, double yValue) {
